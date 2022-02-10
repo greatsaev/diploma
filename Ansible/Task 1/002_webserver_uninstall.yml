@@ -1,0 +1,22 @@
+---
+- name: UnInstall WebSite
+  hosts: nodes
+
+  tasks:
+  - name: UnInstall apache
+    yum: 
+      pkg: httpd
+      state: absent
+      autoremove: yes
+  - name: Delete index.html
+    file:
+      path: "/var/www/html/index.html"
+      state: absent
+  - name: Close ports
+    firewalld:
+      zone: public
+      port: 80/tcp
+      permanent: true
+      state: disabled
+
+

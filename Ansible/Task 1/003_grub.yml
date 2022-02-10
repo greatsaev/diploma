@@ -1,0 +1,46 @@
+---
+- name: Modify grub
+  hosts: nodes
+
+  tasks:
+  - name: check if line net.ifnames=0 is configured in the boot command
+    lineinfile:
+        backup: true
+        path: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX=".*net.ifnames=0'
+        state: absent
+    check_mode: true
+    register: grub_cmdline_net_check
+    changed_when: false
+
+  - name: check if line biosdevname=0 is configured in the boot command
+    lineinfile:
+        backup: true
+        path: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX=".*biosdevname=0'
+        state: absent
+    check_mode: true
+    register: grub_cmdline_bios_check
+    changed_when: false
+
+  - name: insert line net.ifnames=0 if missing
+    lineinfile:
+        backrefs: true
+        path: /etc/default/grub
+        regexp: "^(GRUB_CMDLINE_LINUX=\".*)\"$"
+        line: '\1 net.ifnames=0"'
+    when: grub_cmdline_net_check.found == 0
+    notify: update grub
+ 
+  - name: insert line biosdevname=0 if missing
+    lineinfile:
+        backrefs: true
+        path: /etc/default/grub
+        regexp: "^(GRUB_CMDLINE_LINUX=\".*)\"$"
+        line: '\1 biosdevname=0"'
+    when: grub_cmdline_bios_check.found == 0
+    notify: update grub
+
+  handlers:
+    - name: update grub
+      command: /usr/sbin/grub2-mkconfig -o /boot/grub2/grub.cfg

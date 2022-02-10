@@ -1,0 +1,27 @@
+---
+- name: install apache
+  hosts: nodes
+
+  tasks:
+  - name: Install apache
+    yum: 
+      pkg: httpd
+      state: latest
+  - name: Enable apache on boot
+    service: 
+      name: httpd
+      enabled: yes
+      state: started
+  - name: Create index.html
+    copy:
+      dest: "/var/www/html/index.html"
+      content: |
+        Welcome to my web server
+  - name: Open ports
+    firewalld:
+      zone: public
+      port: 80/tcp
+      permanent: true
+      state: enabled
+
+
