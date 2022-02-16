@@ -1,0 +1,12 @@
+---
+
+apache_listen_port: 80
+
+apache_state: started
+
+apache_enabled: yes
+
+apache_package_state: present
+
+apache_index_html_template: "index.html.j2"
+apache_index_html: "/var/www/html/index.html"

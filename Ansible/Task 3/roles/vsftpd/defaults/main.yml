@@ -1,0 +1,14 @@
+---
+
+vsftpd_anonymous_enable: true
+vsftpd_anon_root: "/var/ftp/pub"
+vsftpd_anon_root_upload: "/var/ftp/pub/upload"
+vsftpd_anon_upload_enable: true
+vsftpd_owner: ftp
+vsftpd_group: ftp
+vsftpd_mode_read: '0555'
+vsftpd_mode_write: '0755'
+vsftpd_setype: public_content_t
+
+vsftpd_listen: true
+vsftpd_listen_ipv6: false

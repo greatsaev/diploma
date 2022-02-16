@@ -1,0 +1,12 @@
+---
+- name: Install apache on RedHat
+  package:
+    name: "{{ apache_package }}"
+    state: "{{ apache_package_state }}" 
+
+- name: Open ports on RedHat
+  firewalld:
+      zone: public
+      port: "{{ apache_listen_port }}/tcp"
+      permanent: true
+      state: enabled

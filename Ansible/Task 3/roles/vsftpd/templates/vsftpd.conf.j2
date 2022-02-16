@@ -1,0 +1,21 @@
+ 
+anonymous_enable={{ 'YES' if vsftpd_anonymous_enable else 'NO' }}
+{% if vsftpd_anon_root is defined %}
+anon_root={{ vsftpd_anon_root }}
+{% endif %}
+
+anon_upload_enable={{ 'YES' if vsftpd_anon_upload_enable else 'NO' }}
+anon_mkdir_write_enable={{ 'YES' if vsftpd_anon_upload_enable else 'NO' }}
+
+local_enable=YES
+write_enable=YES
+local_umask=022
+dirmessage_enable=YES
+xferlog_enable=YES
+connect_from_port_20=YES
+xferlog_std_format=YES
+userlist_enable=YES
+
+listen={{ 'YES' if vsftpd_listen else 'NO' }}
+listen_ipv6={{ 'YES' if vsftpd_listen_ipv6 else 'NO' }}
+pam_service_name={{ vsftpd_service }}

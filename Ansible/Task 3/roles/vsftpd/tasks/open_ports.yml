@@ -1,0 +1,7 @@
+--- 
+- name: Open ports
+  firewalld:
+    zone: public
+    port: 21/tcp
+    permanent: true
+    state: enabled

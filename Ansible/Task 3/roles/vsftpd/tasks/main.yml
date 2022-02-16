@@ -1,0 +1,50 @@
+--- 
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}.yml"
+  
+- name: Install Vsftpd
+  package:
+    name: '{{ vsftpd_packages }}'
+    state: present
+    
+- name: Ensure `anon_root` exists
+  file:
+    path: '{{ vsftpd_anon_root }}'
+    state: directory
+    owner: '{{ vsftpd_owner }}'
+    group: '{{ vsftpd_group }}'
+    mode: '{{ vsftpd_mode_read }}'
+    setype: '{{ vsftpd_setype }}'
+  when: vsftpd_anon_root is defined
+  
+- name: Ensure `anon_root_upload` exists
+  file:
+    path: '{{ vsftpd_anon_root_upload }}'
+    state: directory
+    owner: '{{ vsftpd_owner }}'
+    group: '{{ vsftpd_group }}'
+    mode: '{{ vsftpd_mode_write }}'
+    setype: '{{ vsftpd_setype }}'
+  when: vsftpd_anon_root_upload is defined
+  
+- name: Install configuration file
+  template:
+    src:  vsftpd.conf.j2
+    dest: "{{ vsftpd_config_file }}"
+    mode: '0600'
+  notify: restart vsftpd
+  
+- name: Ensure vsftp is started and enabled
+  service:
+    name: '{{ vsftpd_service }}'
+    state: started
+    enabled: true
+    
+- include_tasks: open_ports.yml
+- include_tasks: selinux.yml
+
+- name: Install welcome_readme
+  template:
+    src:  welcome_readme.txt.j2
+    dest: "{{ vsftpd_anon_root }}/welcome_readme.txt"
+    mode: '{{ vsftpd_mode_read }}'
